@@ -95,8 +95,7 @@ public class BinaryGenerator {
 
 			if (!FuncLocation.containsKey(j)) {
 				System.out.println("J" + j + "MemLen" + memoryO.length);
-				byte val = memoryO[j];
-				memory[j] = val;
+				memory[j] =  memoryO[j];
 			} else {
 				if (FuncMap.containsKey(FuncLocation.get(j))) {
 					int val = FuncMap.get(FuncLocation.get(j)) - j;
@@ -113,9 +112,9 @@ public class BinaryGenerator {
 		System.out.println("header length " + q.length);
 		System.out.println("init length " + init.length);
 		System.out.println("binary length " + memory.length);
-		for(byte a :memory) {
-			System.out.println(Integer.toHexString(a&0xff));
-		}
+//		for(byte a :memory) {
+//			System.out.print(Integer.toHexString(a&0xff)+" ");
+//		}
 		byte[] binary = new byte[memory.length + q.length + init.length];
 		for (int i = 0; i < q.length; i++) {
 			binary[i] = q[i];
@@ -207,11 +206,13 @@ public class BinaryGenerator {
 				FuncMap.put(s[0], ++oldBcount);
 			} else {
 				int value;
+				mem.add(InstMap.get(s[0]));
 				switch (InstMap.get(s[0])) {
 				case 0x36:
 					mem.add((byte) (int) VarMap.get(s[1]));
 					value = Integer.valueOf(s[2]);
 					mem.add((byte) (value & 0xff));
+					byteCount+=3;
 					break;
 				}
 			}

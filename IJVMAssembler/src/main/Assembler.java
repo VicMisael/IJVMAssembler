@@ -42,9 +42,17 @@ public class Assembler {
 		}
 
 		byte[] rom = BinaryGenerator.getInstance().mount();
-		for (byte a : rom) {
-			System.out.print(Integer.toHexString(a & (0xff)).toUpperCase() + " ");
+		int j = 0;
+		System.out.println("Init bytes");
+		while (j < 24) {
+			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase()+" ");
+			j++;
 		}
+		System.out.println("\n Program");
+		for (j=24 ; j < rom.length; j++) {
+			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase()+" ");
+		}
+		System.out.println();
 		String PATH = "";
 
 		// String s = file.getName().split("\\.")[0];
