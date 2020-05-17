@@ -33,6 +33,7 @@ public class BinaryGenerator {
 		InstMap.put("iload", (byte) 0x1C);
 		InstMap.put("istore", (byte) 0x22);
 		InstMap.put("ldc_w", (byte) 0x32);
+		InstMap.put("iinc", (byte) 0x36);
 		InstMap.put("goto", (byte) 0x3C);
 		InstMap.put("iflt", (byte) 0x43);
 		InstMap.put("ifeq", (byte) 0x47);
@@ -91,8 +92,11 @@ public class BinaryGenerator {
 
 		byte memory[] = new byte[memoryO.length];
 		for (int j = 0; j < memoryO.length; j++) {
+
 			if (!FuncLocation.containsKey(j)) {
-				memory[j] = memoryO[j];
+				System.out.println("J" + j + "MemLen" + memoryO.length);
+				byte val = memoryO[j];
+				memory[j] = val;
 			} else {
 				if (FuncMap.containsKey(FuncLocation.get(j))) {
 					int val = FuncMap.get(FuncLocation.get(j)) - j;
@@ -109,7 +113,9 @@ public class BinaryGenerator {
 		System.out.println("header length " + q.length);
 		System.out.println("init length " + init.length);
 		System.out.println("binary length " + memory.length);
-
+		for(byte a :memory) {
+			System.out.println(Integer.toHexString(a&0xff));
+		}
 		byte[] binary = new byte[memory.length + q.length + init.length];
 		for (int i = 0; i < q.length; i++) {
 			binary[i] = q[i];
@@ -128,7 +134,7 @@ public class BinaryGenerator {
 
 	public void decode(String memruction) {
 		int len = memruction.trim().split("\\s+").length;
-		// System.out.print("length :"+ len);
+		// Tamanho da instrução em numero de argumentos(Não em numero de bytes)
 		String[] s = memruction.trim().split("\\s+");
 //		for (String f : s) {
 //			System.out.println(f);
@@ -200,10 +206,11 @@ public class BinaryGenerator {
 				decode(s[1] + " " + s[2]);
 				FuncMap.put(s[0], ++oldBcount);
 			} else {
+				int value;
 				switch (InstMap.get(s[0])) {
-				case 0x3c:
+				case 0x36:
 					mem.add((byte) (int) VarMap.get(s[1]));
-					int value = Integer.valueOf(s[2]);
+					value = Integer.valueOf(s[2]);
 					mem.add((byte) (value & 0xff));
 					break;
 				}
