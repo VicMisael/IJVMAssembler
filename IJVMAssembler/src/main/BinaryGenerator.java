@@ -162,8 +162,13 @@ public class BinaryGenerator {
 					byteCount += 3;
 					break;
 				case 0x22:// istore
-					VarMap.put(s[1], varnum);
-					mem.add((byte) varnum++);
+					if (!VarMap.containsKey(s[1])) {
+						VarMap.put(s[1], varnum);
+						mem.add((byte) varnum++);
+					} else {
+						var = VarMap.get(s[1]);
+						mem.add((byte) var);
+					}
 					byteCount += 2;
 					break;
 				case 0x1C:// iload
