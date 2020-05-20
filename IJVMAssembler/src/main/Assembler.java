@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 
@@ -14,12 +16,27 @@ public class Assembler {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		JFileChooser fileChooser = new JFileChooser();
-		int returnValue = fileChooser.showOpenDialog(fileChooser);
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
 
-			handleFile(file);
+		if (args.length == 0) {
+			JFileChooser fileChooser = new JFileChooser();
+			try {
+				fileChooser = new JFileChooser((Assembler.class.getProtectionDomain().getCodeSource().getLocation()
+						.toURI().getPath().toString()));
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			int returnValue = fileChooser.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				File file = fileChooser.getSelectedFile();
+
+				handleFile(file);
+			}
+
+		} else if (args.length == 1) {
+			File f = Paths.get(args[0]).toFile();
+			handleFile(f);
 		}
 
 	}
@@ -34,7 +51,7 @@ public class Assembler {
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Arquivo não encontrado");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -45,12 +62,12 @@ public class Assembler {
 		int j = 0;
 		System.out.println("Init bytes");
 		while (j < 24) {
-			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase()+" ");
+			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
 			j++;
 		}
 		System.out.println("\n Program");
-		for (j=24 ; j < rom.length; j++) {
-			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase()+" ");
+		for (j = 24; j < rom.length; j++) {
+			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
 		}
 		System.out.println();
 		String PATH = "";
