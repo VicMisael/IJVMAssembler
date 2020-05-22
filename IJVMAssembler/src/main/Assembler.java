@@ -11,11 +11,22 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class Assembler {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		try {
+
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		if (args.length == 0) {
 			JFileChooser fileChooser = new JFileChooser();
@@ -43,6 +54,7 @@ public class Assembler {
 
 	public static void handleFile(File file) {
 		// BufferedReader br;
+		long time = System.currentTimeMillis();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st;
@@ -59,25 +71,22 @@ public class Assembler {
 		}
 
 		byte[] rom = BinaryGenerator.getInstance().mount();
-		int j = 0;
-		System.out.println("Init bytes");
-		while (j < 24) {
-			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
-			j++;
-		}
-		System.out.println("\n Program");
-		for (j = 24; j < rom.length; j++) {
-			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
-		}
-		System.out.println();
+
+//		int j = 0;
+//		System.out.println("Init bytes");
+//		while (j < 24) {
+//			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
+//			j++;
+//		}
+//		System.out.println("\n Program");
+//		for (j = 24; j < rom.length; j++) {
+//			System.out.print(Integer.toHexString(rom[j] & 0xff).toUpperCase() + " ");
+//		}	
+//		System.out.println();
+
 		String PATH = "";
-
-		// String s = file.getName().split("\\.")[0];
-
-		// System.out.println(s);
-		// s = s + ".bin";
 		PATH = file.getPath().replaceAll(file.getName(), "program.bin");
-		// System.out.println(PATH);
+
 		File outFile = new File(PATH);
 		try {
 			OutputStream os = new FileOutputStream(outFile);
@@ -87,7 +96,8 @@ public class Assembler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// int returnValue = fileChooser.showOpenDialog(fileChooser);
+
+		System.out.println("Assembled in : " + (System.currentTimeMillis() - time) + "ms");
 
 	}
 
